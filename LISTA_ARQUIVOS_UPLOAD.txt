@@ -1,0 +1,58 @@
+========================================
+ARQUIVOS QUE DEVEM SER ENVIADOS
+========================================
+
+FAÇA UPLOAD DE TODOS ESTES ARQUIVOS E PASTAS
+PARA: public_html/
+
+ARQUIVOS NA RAIZ:
+-----------------
+✓ index.php
+✓ .htaccess
+✓ artisan
+✓ composer.json
+✓ package.json
+✓ vite.config.js
+✓ phpunit.xml
+
+PASTAS COMPLETAS:
+-----------------
+✓ app/                    (TODA a pasta com tudo dentro)
+✓ bootstrap/              (TODA a pasta com tudo dentro)
+✓ config/                 (TODA a pasta com tudo dentro)
+✓ database/               (TODA a pasta com tudo dentro)
+✓ resources/              (TODA a pasta com tudo dentro)
+✓ routes/                 (TODA a pasta com tudo dentro)
+✓ storage/                (TODA a pasta com tudo dentro)
+
+NÃO ENVIE:
+----------
+✗ node_modules/
+✗ .git/
+✗ .env (já foi criado na hospedagem)
+✗ vendor/ (será criado após composer install)
+
+========================================
+COMO FAZER UPLOAD
+========================================
+
+OPÇÃO 1: Via FTP (FileZilla, WinSCP)
+1. Conecte ao servidor FTP
+2. Vá para public_html/
+3. Faça upload de TODAS as pastas e arquivos acima
+
+OPÇÃO 2: Via ZIP
+1. Compacte todas as pastas e arquivos acima
+2. Faça upload do ZIP via cPanel File Manager
+3. Extraia o ZIP em public_html/
+
+========================================
+APÓS UPLOAD, EXECUTE:
+========================================
+
+cd ~/public_html
+php composer.phar install --no-dev --optimize-autoloader
+php artisan key:generate
+php artisan config:clear
+
+========================================

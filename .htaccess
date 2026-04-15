@@ -1,0 +1,38 @@
+# Locaweb — pasta "web" = raiz do Laravel (vendor e .env ao lado de public/)
+# Se nada mudar no servidor: confira se o painel permite .htaccess (AllowOverride)
+# e se mod_rewrite está ativo (hospedagem compartilhada costuma ter).
+
+DirectoryIndex index.php
+
+<FilesMatch "^\.env">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    Options +FollowSymLinks -MultiViews
+    RewriteEngine On
+    RewriteBase /
+
+    # Bloquear nomes sensíveis na URL
+    RewriteRule ^\.env$ - [F,L]
+    RewriteRule ^composer\.(json|lock)$ - [F,L]
+
+    # Evitar URL com /public/ visível
+    RewriteCond %{THE_REQUEST} \s/+public/ [NC]
+    RewriteRule ^public/(.*)$ /$1 [R=301,L]
+
+    # Vite e demais arquivos em public/build/
+    RewriteRule ^build/(.*)$ public/build/$1 [L]
+
+    # Link simbólico storage (php artisan storage:link)
+    RewriteRule ^storage/(.*)$ public/storage/$1 [L]
+
+    # Outros arquivos que existam em public/ (favicon, etc.)
+    RewriteCond %{DOCUMENT_ROOT}/public%{REQUEST_URI} -f
+    RewriteRule ^(.*)$ public/$1 [L]
+
+    # Rotas Laravel
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>

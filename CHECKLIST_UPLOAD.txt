@@ -1,0 +1,36 @@
+═══════════════════════════════════════════════════════════════
+  CHECKLIST - ARQUIVOS PARA UPLOAD
+═══════════════════════════════════════════════════════════════
+
+Marque cada item após fazer upload:
+
+ARQUIVOS NA RAIZ:
+[ ] .htaccess
+[ ] artisan
+[ ] composer.json
+[ ] package.json
+[ ] vite.config.js
+[ ] phpunit.xml
+[ ] index.php (já está)
+
+PASTAS COMPLETAS:
+[ ] app/ (toda a pasta com subpastas)
+[ ] bootstrap/ (toda a pasta com subpastas)
+[ ] config/ (toda a pasta)
+[ ] database/ (toda a pasta com subpastas)
+[ ] resources/ (toda a pasta com subpastas)
+[ ] routes/ (toda a pasta)
+[ ] storage/ (toda a pasta com subpastas)
+
+═══════════════════════════════════════════════════════════════
+  APÓS UPLOAD - VERIFICAR VIA SSH
+═══════════════════════════════════════════════════════════════
+
+Execute:
+  cd ~/public_html
+  ls -la composer.json artisan
+
+Se aparecerem os arquivos, está OK!
+Se der "No such file", o upload não funcionou.
+
+═══════════════════════════════════════════════════════════════
