@@ -1,0 +1,73 @@
+# Deploy automático para Locaweb (FTP → pasta "web").
+#
+# Secrets no GitHub (Settings → Secrets and variables → Actions):
+#   HOST     = ftp.videiraengenharia.com.br  (ou o host que aparecer no painel)
+#   USER     = usuário FTP
+#   PASS     = senha FTP
+#
+# O .env NÃO vai no repositório: mantenha-o só no servidor ou crie manualmente após o deploy.
+
+name: Deploy Locaweb (FTP)
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-locaweb
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build e FTP
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: mbstring, dom, curl, ctype, fileinfo, json, tokenizer, xml, pdo, pdo_mysql
+          coverage: none
+          tools: composer:v2
+
+      - name: Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Composer install (sem scripts)
+        run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
+
+      - name: .env para o build (CI)
+        run: |
+          cp .env.example .env
+          php artisan key:generate --force --no-interaction
+
+      - name: Package discover
+        run: php artisan package:discover --ansi
+
+      - name: NPM e Vite
+        run: |
+          npm ci
+          npm run build
+
+      - name: Remover pastas pesadas e .env (não enviar credenciais do CI)
+        run: |
+          rm -rf node_modules .git
+          rm -f .env
+
+      - name: FTP Deploy Locaweb
+        uses: locaweb/ftp-deploy@1.0.0
+        with:
+          host: ${{ secrets.HOST }}
+          user: ${{ secrets.USER }}
+          password: ${{ secrets.PASS }}
+          localDir: "."
+          remoteDir: "web"
+          forceSsl: false
